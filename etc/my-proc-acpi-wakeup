@@ -1,0 +1,10 @@
+#!/bin/sh
+echo "/etc/my-proc-acpi-wakeup: Hello, world !"
+whoami
+
+cat /proc/acpi/wakeup \
+| awk -- '{ if (match ($1, /^USB/) && match ($3, /enabled/)) printf ("echo %-12s > /proc/acpi/wakeup\n", "\"" $1 "\""); }' \
+| sh
+
+cat /proc/acpi/wakeup
+

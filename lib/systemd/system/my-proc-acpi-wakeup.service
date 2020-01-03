@@ -1,0 +1,12 @@
+[Unit]
+Description               = I wish to prevent USB keyboard/mouse from waking up the system.
+ConditionFileIsExecutable = /etc/my-proc-acpi-wakeup
+After                     = network.target
+
+[Service]
+ExecStart                 = /etc/my-proc-acpi-wakeup
+TimeoutSec                = 0
+
+[Install]
+WantedBy                  = multi-user.target
+

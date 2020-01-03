@@ -1,0 +1,39 @@
+[2020-01-03] my-proc-acpi-wakeup:
+
+Many Linux computers are, by default,
+configured to be woken up from Stand-by
+for any movement/button-press of the USB mouse or any key-press of a USB keyboard.
+
+(The behaviour for the movement of the USB mouse is particularly annoying.)
+
+In order to disable this behaviour, we have to run:
+	echo "USB0" > /proc/acpi/wakeup
+	echo "USB1" > /proc/acpi/wakeup
+	# etc. for each line in the output of 'cat /proc/acpi/wakeup | grep -Pi "USB.*enabled"'.
+	# Each redirected "echo" toggles the behaviour of the specified device.
+
+This project attempts to automatize this at every start-up.
+
+
+
+How can this project be used ?
+
+The following commands should be run as "root":
+	
+	cp lib/systemd/system/my-proc-acpi-wakeup.service /lib/systemd/system/
+	cp etc/my-proc-acpi-wakeup                        /etc/
+	chmod +x                                          /etc/my-proc-acpi-wakeup
+	
+	systemctl daemon-reload
+	
+	# Test once:
+	cat /proc/acpi/wakeup | grep -Pi "USB.*enabled" # This might show some lines.
+	systemctl start my-proc-acpi-wakeup
+	cat /proc/acpi/wakeup | grep -Pi "USB.*enabled" # This should no longer show any line.
+	
+	# Enable running at every start-up:
+	systemctl enable my-proc-acpi-wakeup
+	
+	# Debug:
+	journalctl --no-pager -l --unit my-proc-acpi-wakeup
+
